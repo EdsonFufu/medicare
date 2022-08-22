@@ -5,14 +5,28 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const Handlebars = require('handlebars')
 var expressHbs = require('express-handlebars');
+require('dotenv').config()
+var session = require('express-session');
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
 
 var mongoose = require("mongoose")
 
-var indexRouter = require('./routes/index');
+const indexRouter = require('./routes/index');
+const userRouter = require("./routes/user")
+const signupRouter = require("./routes/signup")
+const productRouter = require("./routes/product")
+const categoryRouter = require("./routes/category")
 
 var app = express();
-mongoose.connect('mongodb://localhost:27017/medicare',{useNewUrlParser: true})
+
+mongoose.connect(process.env.MONGO_DB,{useNewUrlParser: true})
+var db = mongoose.connection;
+db.once('open', function() {
+  console.log("Db Connected Successfully");
+});
+db.on('error', function(err) {
+  console.log(err);
+});
 
 // view engine setup
 app.engine(".hbs",expressHbs.engine({defaultLayout:'layout',extname:'.hbs', handlebars: allowInsecurePrototypeAccess(Handlebars)}));
@@ -25,8 +39,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret :  process.env.SECRET,
+  resave :true,
+  saveUninitialized: true,
+  cookie : {
+    maxAge:(1000 * 60 * 100)
+  }
+}));
 
 app.use('/', indexRouter);
+app.use('/user', userRouter);
+app.use('/signup', signupRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -39,9 +63,23 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
+  console.log(err.message)
+
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  if(err.status === 400) {
+    res.render('400',{ layout:"layout-plain",title:'400'});
+  }else if (err.status === 401){
+    res.render('401',{ layout:"layout-plain",title:'401'});
+  }else if (err.status === 403){
+    res.render('403',{ layout:"layout-plain",title:'403'});
+  }else if (err.status === 404){
+    res.render('404',{ layout:"layout-plain",title:'404'});
+  }else {
+    res.render('500',{ layout:"layout-plain",title:'500'});
+  }
 });
 
-module.exports = app;
+app.listen(3000, () => {
+  console.log('The web server has started on port 3000');
+});

@@ -2,16 +2,11 @@ var express = require('express');
 var router = express.Router();
 var Product = require('../model/product')
 var User = require('../model/user')
+const auth = require("../middleware/auth");
 
-
-
-/* GET Login Page. */
-router.get('/login', function(req, res, next) {
-  res.render('login', { title:'Login'});
-});
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/',auth, function(req, res, next) {
   Product.find(function(err,products){
     let productChunks = [];
     let chunkSize = 4;
@@ -38,38 +33,6 @@ router.get('/product/view/:id', function(req, res, next) {
   });
   
 });
-
-/* GET Users List. */
-router.get('/user', function(req, res, next) {
-  User.find(function(err,users){
-    res.render('users/index', { title:'Users', userList:users,usersExists:users.length > 0});
-  })
-});
-
-/* GET User Create. */
-router.get('/user/create', function(req, res, next) {
-    res.render('users/create', { title:'Create User'});
-});
-
-/* GET User By ID. */
-router.get('/user/view/:id', function(req, res, next) {
-  var id = req.params.id
-  var user = User.find({'_id':id},(err,result) => {
-    res.render('users/view', { title:`User#${id}`, user:result,userExists:result.length > 0});
-  });
-  
-  
-});
-
-
-/* GET Payment List. */
-router.get('/payment', function(req, res, next) {
-  User.find(function(err,users){
-    res.render('users/index', { title:'Users', userList:users,usersExists:users.length > 0});
-  })
-  
-});
-
 
 /* GET Orders List. */
 router.get('/order', function(req, res, next) {

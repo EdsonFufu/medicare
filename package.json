@@ -9,10 +9,13 @@
     "@handlebars/allow-prototype-access": "^1.0.5",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
+    "dotenv": "^16.0.1",
     "express": "~4.16.1",
     "express-handlebars": "^6.0.6",
+    "express-session": "^1.17.3",
     "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
+    "jwt-then": "^1.0.1",
     "mongoose": "^6.4.4",
     "morgan": "~1.9.1"
   }
