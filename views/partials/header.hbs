@@ -32,7 +32,7 @@
         </form>
         <div class="header-logo-wrapper col-auto p-0">
             <div class="logo-wrapper">
-                <a href="/"><img class="img-fluid" src="./images/logo.png"   alt="Medicare.com" /></a>
+                <a href="/"><img class="img-fluid" src="/images/logo.png"   alt="Medicare.com" /></a>
             </div>
             <div class="toggle-sidebar">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -69,7 +69,7 @@
                         <ul>
                             <li>
                                 <div class="media"><img class="img-fluid b-r-5 me-3 img-60"
-                                                        src="./images/cart-img.jpg"
+                                                        src="/images/cart-img.jpg"
                                                         alt="">
                                     <div class="media-body"><span>Furniture Chair for Home</span>
                                         <div class="qty-box">
@@ -97,7 +97,7 @@
                             </li>
                             <li>
                                 <div class="media"><img class="img-fluid b-r-5 me-3 img-60"
-                                                        src="./images/cart-img.jpg"
+                                                        src="/images/cart-img.jpg"
                                                         alt="">
                                     <div class="media-body"><span>Furniture Chair for Home</span>
                                         <div class="qty-box">
@@ -113,7 +113,7 @@
                                         <h6 class="font-primary">$500.00</h6>
                                     </div>
                                     <div class="close-circle"><a class="bg-danger"
-                                                                 href="http://admin.pixelstrap.com/cuba/theme/index.html#">
+                                                                 href="#">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                              stroke-linecap="round" stroke-linejoin="round"
@@ -143,7 +143,7 @@
                 </li>
                 <li class="profile-nav onhover-dropdown p-0 me-0">
                     <div class="media profile-media"><img class="rounded"
-                                                          src="./images/profile.jpeg"
+                                                          src="/images/profile.jpeg"
                                                           alt="Profile" width="25" />
                         <div class="media-body"><span>
                             {{#if isLoggedin }}
@@ -156,7 +156,7 @@
                         </div>
                     </div>
                     <ul class="profile-dropdown onhover-show-div">
-                        {{#if isLoggedin }}
+                        {{#if isLoggedIn }}
                             <li><a href="/account">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -177,7 +177,7 @@
                                 <span>Settings</span></a></li>
                         {{/if}}
                         <li>
-                            {{#if isLoggedin }}
+                            {{#if isLoggedIn }}
                                 <a href="/logout">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

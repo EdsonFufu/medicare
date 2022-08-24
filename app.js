@@ -5,22 +5,25 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const Handlebars = require('handlebars')
 var expressHbs = require('express-handlebars');
+const bodyParser = require("body-parser");
 require('dotenv').config()
 var session = require('express-session');
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
-
-var mongoose = require("mongoose")
+const app = express();
+const mongoose = require("mongoose")
 
 const indexRouter = require('./routes/index');
 const userRouter = require("./routes/user")
 const signupRouter = require("./routes/signup")
 const productRouter = require("./routes/product")
 const categoryRouter = require("./routes/category")
+const loginRouter = require("./routes/login")
+const profileRouter = require("./routes/profile")
+const logoutRouter = require("./routes/logout")
 
-var app = express();
 
 mongoose.connect(process.env.MONGO_DB,{useNewUrlParser: true})
-var db = mongoose.connection;
+const db = mongoose.connection;
 db.once('open', function() {
   console.log("Db Connected Successfully");
 });
@@ -36,7 +39,7 @@ app.set('view engine', '.hbs');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
@@ -51,6 +54,11 @@ app.use(session({
 app.use('/', indexRouter);
 app.use('/user', userRouter);
 app.use('/signup', signupRouter);
+app.use('/login', loginRouter);
+app.use('/product', productRouter);
+app.use('/category', categoryRouter);
+app.use('/profile',profileRouter);
+app.use('/logout',logoutRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -6,8 +6,7 @@ module.exports = (req, res, next) => {
     } else {
         console.log("Not logged in!")
         var err = new Error("Not logged in!");
-        //next(err);  //Error, trying to access unauthorized page!
-        res.redirect('/');
+        res.render('403',{ layout:"layout-plain",title:'403'});
     }
 };
 

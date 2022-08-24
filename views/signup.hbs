@@ -3,19 +3,19 @@
         <div class="col-12 p-0">
             <div class="login-card">
                 <div>
-                    <div><a class="logo" href="/"><img class="img-fluid for-light" src="./images/logo-icon.png" alt="looginpage"><img class="img-fluid for-dark" src="./images/logo.png" alt="looginpage"></a></div>
+<!--                    <div><a class="logo" href="/"><img class="img-fluid for-light" src="./images/logo-icon.png" alt="looginpage"><img class="img-fluid for-dark" src="./images/logo.png" alt="looginpage"></a></div>-->
                     <div class="login-main">
-                        <form class="theme-form" method="post" action="/user/create">
+                        <form class="theme-form" method="post" action="/user">
                             <h4>Create your account</h4>
                             <p>Enter your personal details to create account</p>
                             <div class="form-group">
                                 <label class="col-form-label pt-0">Your Name</label>
                                 <div class="row g-2">
                                     <div class="col-6">
-                                        <input class="form-control" type="text" required="" placeholder="First name">
+                                        <input class="form-control" type="text" required="" placeholder="First name" name="firstName" />
                                     </div>
                                     <div class="col-6">
-                                        <input class="form-control" type="text" required="" placeholder="Last name">
+                                        <input class="form-control" type="text" required="" placeholder="Last name" name="lastName" />
                                     </div>
                                 </div>
                             </div>
@@ -30,10 +30,28 @@
                                     <div class="show-hide"><span class="show"></span></div>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="col-form-label">Is Enabled ? </label>
+                                <div class="form-input position-relative">
+                                    <select class="form-select" name="status">
+                                        <option>Yes</option>
+                                        <option>No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label">User Role ? </label>
+                                <div class="form-input position-relative">
+                                    <select class="form-select" name="role">
+                                        <option>ROLE_CUSTOMER</option>
+                                        <option>ROLE_ADMIN</option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="form-group mb-0">
                                 <button class="btn btn-primary btn-block w-100" type="submit">Create Account</button>
                             </div>
-                            <p class="mt-4 mb-0">Already have an account?<a class="ms-2" href="/login">Sign in</a></p>
                         </form>
                     </div>
                 </div>

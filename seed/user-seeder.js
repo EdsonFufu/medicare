@@ -8,7 +8,7 @@ var users = [
         imagePath:"https://i-cf65.ch-static.com/content/dam/cf-consumer-healthcare/panadol/en_eg/Products/455x455-Advance-eng%20eg_new.jpg",
         fullname:"Edson Fufu",
         email:"eddy20062010@gmal.com",
-        password:"admin",
+        password:"$2a$10$YiEeQtk9CceGT1gtMgdPZOZzZPA3K36TbRcrnRqwLPCRmarea1BPS",
         userRole:"ADMIN",
         isActive:true
     }),
@@ -17,7 +17,7 @@ var users = [
         imagePath:"https://i-cf65.ch-static.com/content/dam/cf-consumer-healthcare/panadol/en_eg/Products/455x455-Advance-eng%20eg_new.jpg",
         fullname:"Jacklin Samson",
         email:"jacklin.samson19@gmal.com",
-        password:"jacklin",
+        password:"$2a$10$YiEeQtk9CceGT1gtMgdPZOZzZPA3K36TbRcrnRqwLPCRmarea1BPS",
         userRole:"ADMIN",
         isActive:true
     })
