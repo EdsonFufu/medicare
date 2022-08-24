@@ -2,11 +2,11 @@
     <div class="page-title">
         <div class="row">
             <div class="col-6">
-                <h3>Products</h3>
+                <h3>Product Categories</h3>
             </div>
             <div class="col-6">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="http://admin.pixelstrap.com/cuba/theme/index.html">
+                    <li class="breadcrumb-item"><a href="/">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                              stroke-linejoin="round" class="feather feather-home">
@@ -28,7 +28,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5>{{title}} </h5><span></span>
-                    <a href="/product/create" class="btn btn-outline-primary pull-right"><i class="fa fa-plus-circle"></i> Add New Product</a>
+                    <a href="/category/create" class="btn btn-outline-primary pull-right"><i class="fa fa-plus-circle"></i> Add New Category</a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive product-table">
@@ -37,37 +37,33 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th>Image</th>
-                                <th>Details</th>
-                                <th>Amount</th>
-                                <th>Stock</th>
-                                <th>Start date</th>
+                                <th>name</th>
+                                <th>Description</th>
+                                <th>CreatedDate</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
-                            {{#each productList}}
+                            {{#if exists }}
+                            {{#each categoryList}}
                                 <tr>
                                     <td>{{this._id}}</td>
                                     <td><img width="100" height="100" src="{{this.imagePath}}" class="circle-img rounded-15 img-thumbnail" alt="{{this.title}}" /></td>
                                     <td>
-                                        <span>{{this.title}}</span>
+                                        <span>{{this.name}}</span>
                                     </td>
-                                    <td>{{this.price}}</td>
-                                    <td >
-                                        {{#if this.available}}
-                                            <span class="font-success">{{this.available}}</span>
-                                        {{else}}
-                                            <span class="font-danger">{{this.available}}</span>
-                                        {{/if}}
-                                    </td>
+                                    <td>{{this.description}}</td>
                                     <td>{{this.createdAt}}</td>
                                     <td>
-                                        <a href='/product/view/{{this._id}}'><i class="fa fa-eye text-info"></i></a>
-                                        <a href='/product/edit/{{this._id}}'><i class="fa fa-edit text-primary"></i></a>
-                                        <a href='/product/delete/{{this._id}}'><i class="fa fa-trash text-danger"></i></a>
+                                        <a href='/category/{{this._id}}'><i class="fa fa-eye text-info"></i></a>
+                                        <a href='/category/edit/{{this._id}}'><i class="fa fa-edit text-secondary"></i></a>
+                                        <a href='/category/delete/{{this._id}}'><i class="fa fa-trash text-danger"></i></a>
                                     </td>
                                 </tr>
                             {{/each}}
+                            {{else}}
+                            <tr><td colspan="6">No Data Available</td></tr>
+                            {{/if}}
                             </tbody>
                         </table>
                     </div>

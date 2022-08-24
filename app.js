@@ -11,6 +11,7 @@ var session = require('express-session');
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
 const app = express();
 const mongoose = require("mongoose")
+const multer = require("multer");
 
 const indexRouter = require('./routes/index');
 const userRouter = require("./routes/user")
@@ -59,6 +60,8 @@ app.use('/product', productRouter);
 app.use('/category', categoryRouter);
 app.use('/profile',profileRouter);
 app.use('/logout',logoutRouter);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

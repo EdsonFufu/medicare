@@ -1,0 +1,71 @@
+<div class="container-fluid" style="z-index: -1">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-6">
+                <h3>Create Category</h3>
+            </div>
+            <div class="col-6">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                             stroke-linejoin="round" class="feather feather-home">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </a></li>
+                    <li class="breadcrumb-item">Dashboard</li>
+                    <li class="breadcrumb-item active">Default</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <form action="/category" method="post" enctype='multipart/form-data'>
+                    <div class="form theme-form">
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label>name</label>
+                                    <input class="form-control" type="text" placeholder="Category name" data-bs-original-title="" name="name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label>Description</label>
+                                    <textarea class="form-control" id="exampleFormControlTextarea4" rows="3" name="description" placeholder="Category Description"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label>Upload category Image</label>
+
+                                        <div class="dz-message needsclick"><i class="icon-cloud-up"></i>
+                                            <input type="file" name="image" />
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="text-end"><button type="submit" class="btn btn-success me-3" href="#" data-bs-original-title="" title="">Add</button><button type="reset" class="btn btn-danger" href="#" data-bs-original-title="" title="">Cancel</button></div>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

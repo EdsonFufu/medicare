@@ -17,9 +17,11 @@
     "express-session": "^1.17.3",
     "handlebars": "^4.7.7",
     "hbs": "~4.0.4",
+    "helpers": "^0.0.6",
     "http-errors": "~1.6.3",
     "jwt-then": "^1.0.1",
     "mongoose": "^6.4.4",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "multer": "^1.4.5-lts.1"
   }
 }
