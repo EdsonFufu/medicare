@@ -13,7 +13,12 @@ var schema = new Schema({
     },
     price:{type:Number,required:true},
     available:{type:Number,required:true},
-    discount:{type:Number,required:true}
+    discount:{type:Number,required:true},
+    photos:[{
+        type:mongoose.Schema.Types.ObjectId,
+        required:true,
+        ref:"Photo"
+    }]
 },{timestamps:true})
 
 module.exports = mongoose.model('Product',schema)
