@@ -34,7 +34,7 @@ var upload = multer({storage: storage,filter:imageFilter}).array('photos',10);
 /* GET Products List. */
 router.get('/', auth, function(req, res, next) {
     Product.find(function(err,products){
-        console.log("Products",products)
+        //console.log("Products",products)
         res.render('products/index', { title:'Products', productList:products,productsExists:products.length > 0,id:req.session.user._id,isLoggedIn:true,user:req.session.user});
     })
 });

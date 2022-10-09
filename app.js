@@ -21,6 +21,8 @@ const categoryRouter = require("./routes/category")
 const loginRouter = require("./routes/login")
 const profileRouter = require("./routes/profile")
 const logoutRouter = require("./routes/logout")
+const cartRouter = require("./routes/cart")
+const orderRouter = require("./routes/order")
 
 
 mongoose.connect(process.env.MONGO_DB,{useNewUrlParser: true})
@@ -60,6 +62,8 @@ app.use('/product', productRouter);
 app.use('/category', categoryRouter);
 app.use('/profile',profileRouter);
 app.use('/logout',logoutRouter);
+app.use('/cart',cartRouter);
+app.use('/order',orderRouter);
 
 
 
