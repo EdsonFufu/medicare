@@ -13,6 +13,11 @@ const app = express();
 const mongoose = require("mongoose")
 const multer = require("multer");
 
+var cors = require('cors');
+
+// use it before all route definitions
+app.use(cors({origin: 'http://localhost:4200'}));
+
 const indexRouter = require('./routes/index');
 const userRouter = require("./routes/user")
 const signupRouter = require("./routes/signup")
@@ -23,6 +28,7 @@ const profileRouter = require("./routes/profile")
 const logoutRouter = require("./routes/logout")
 const cartRouter = require("./routes/cart")
 const orderRouter = require("./routes/order")
+const apiRouter = require("./routes/api")
 
 
 mongoose.connect(process.env.MONGO_DB,{useNewUrlParser: true})
@@ -64,6 +70,7 @@ app.use('/profile',profileRouter);
 app.use('/logout',logoutRouter);
 app.use('/cart',cartRouter);
 app.use('/order',orderRouter);
+app.use('/api',apiRouter);
 
 
 
@@ -74,6 +81,18 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
+  // Website you wish to allow to connect
+  // res.setHeader('Access-Control-Allow-Origin', 'localhost:4200');
+  //
+  // // Request methods you wish to allow
+  // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  //
+  // // Request headers you wish to allow
+  // res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  //
+  // // Set to true if you need the website to include cookies in the requests sent
+  // // to the API (e.g. in case you use sessions)
+  // res.setHeader('Access-Control-Allow-Credentials', true);
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
