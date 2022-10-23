@@ -114,6 +114,7 @@ app.use(function(err, req, res, next) {
   }
 });
 
-app.listen(3000, () => {
-  console.log('The web server has started on port 3000');
-});
+const port = "3000";
+app.set('port', port);
+
+module.exports = app;
