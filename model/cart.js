@@ -1,12 +1,20 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema
 
-const schema = new Schema({
-    userId:{type:Schema.Types.ObjectId,required:true,ref:'User'},
+const cartSchema = new Schema({
+    sessionId:{type:String,required:true},
     quantity:{type:Number,required:true},
-    price:{type:Number,required:true},
     total:{type:Number,required:true},
-    cartItem:[{type:Schema.Types.ObjectId,ref:'CartItem'}]
+    user:{type:Schema.Types.ObjectId,ref:'User'}
 },{timestamps:true})
 
-module.exports = mongoose.model('Cart',schema)
+cartSchema.virtual('items', {
+    ref: 'CartItem',
+    localField: '_id',
+    foreignField: 'cart'
+});
+
+cartSchema.set('toObject', { virtuals: true });
+cartSchema.set('toJSON', { virtuals: true });
+
+module.exports = mongoose.model('Cart',cartSchema)

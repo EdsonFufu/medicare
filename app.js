@@ -16,7 +16,7 @@ const multer = require("multer");
 var cors = require('cors');
 
 // use it before all route definitions
-app.use(cors({origin: 'http://localhost:4200'}));
+app.use(cors({origin: process.env.HOST}));
 
 const indexRouter = require('./routes/index');
 const userRouter = require("./routes/user")
@@ -34,7 +34,7 @@ const apiRouter = require("./routes/api")
 mongoose.connect(process.env.MONGO_DB,{useNewUrlParser: true})
 const db = mongoose.connection;
 db.once('open', function() {
-  console.log("Db Connected Successfully");
+  console.log("Db Connected");
 });
 db.on('error', function(err) {
   console.log(err);

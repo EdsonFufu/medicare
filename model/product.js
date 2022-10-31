@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema
 
-var schema = new Schema({
+const productSchema = new Schema({
     imagePath:{type:String,required:true},
     title:{type:String,required:true},
     description:{type:String,required:true},
@@ -13,12 +13,22 @@ var schema = new Schema({
     },
     price:{type:Number,required:true},
     available:{type:Number,required:true},
-    discount:{type:Number,required:true},
-    photos:[{
-        type:mongoose.Schema.Types.ObjectId,
-        required:true,
-        ref:"Photo"
-    }]
-},{timestamps:true})
+    discount:{type:Number,required:true}
+},{timestamps:true},{count:true})
 
-module.exports = mongoose.model('Product',schema)
+// Specifying a virtual with a `ref` property is how you enable virtual
+// population
+productSchema.virtual('photos', {
+    ref: 'Photo',
+    localField: '_id',
+    foreignField: 'product'
+});
+
+productSchema.virtual('numberOfPhotos', {
+    ref: 'Photo',
+    localField: '_id',
+    foreignField: 'product',
+    count:true
+});
+
+module.exports = mongoose.model('Product',productSchema)

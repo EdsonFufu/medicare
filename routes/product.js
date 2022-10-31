@@ -112,7 +112,7 @@ router.post("/",auth,(req,res,err) => {
                     name: file.originalname,
                     mimetype: file.mimetype,
                     size: file.size,
-                    productId:product
+                    product:product._id
                 }));
             })
 

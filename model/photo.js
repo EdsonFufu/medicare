@@ -6,7 +6,7 @@ const schema = new Schema({
     name:{type:String,required:true},
     size:Number,
     mimeType:String,
-    productId:{
+    product:{
         type:mongoose.Schema.Types.ObjectId,
         required:true,
         ref:"Product"

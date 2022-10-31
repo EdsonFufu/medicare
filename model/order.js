@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema
 const orderSchema = new Schema({
-    sessionId:{type:String,required:true},
-    userId:{type:Schema.Types.ObjectId,required: true,ref:'User'},
-    cartId:{type:Schema.Types.ObjectId,required: true,ref:'Cart'},
+    user:{type:Schema.Types.ObjectId,required: true,ref:'User'},
+    cart:{type:Schema.Types.ObjectId,required: true,ref:'Cart'},
     quantity:{type:Number,required:true},
     price:{type:Number,required:true},
     total:{type:Number,required:true},

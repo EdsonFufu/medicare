@@ -5,6 +5,14 @@ const jwt = require("jwt-then");
 const auth = require("../middleware/auth-api");
 const Category = require("../model/category");
 const Product = require("../model/product");
+const Cart = require("../model/cart");
+const CartItem = require("../model/cartItem");
+const {
+    v1: uuidv1,
+    v4: uuidv4,
+} = require('uuid');
+const Console = require("console");
+const mongoose = require("mongoose");
 
 const router = express.Router()
 
@@ -41,7 +49,7 @@ router.post("/login",(req,res) => {
                     return
                 }
                 console.log("Token Generated:",token)
-                res.status(200).json({message:"Login Successful",body:{token,user:usr}});
+                res.status(200).json({message:"Login Successful",body:{token,user:usr,sessionId:uuidv1()}});
             });
 
         }).catch(err => {
@@ -92,7 +100,7 @@ router.post('/signup', async function (req, res) {
                     return
                 }
                 console.log("Token Generated:", token)
-                res.status(200).json({message: "Login Successful", body: {token, user: usr}});
+                res.status(200).json({message: "Login Successful", body: {token, user: usr,sessionId:uuidv1()}});
             });
 
         }).catch(err => {
@@ -102,62 +110,176 @@ router.post('/signup', async function (req, res) {
     }
 });
 
-router.get('/category', auth, function(req, res, next) {
-    Category.find({}).populate({path:'products',strictPopulate:false}).then( results => {
-        let categories = []
-        results.forEach(result => {
-            console.log(result._id)
-            Product.find({category:result._id}).then(products => {
-                console.log("Product:",products)
-                result.products = products
-            })
-
-            categories.push(result)
-        })
-
-        res.status(200).json({ message:'Success', body:categories});
+router.get('/category', function(req, res, next) {
+    Category.find({}).populate({path:'products',strictPopulate:false}).populate({'path':'totalProducts',strictPopulate:false}).then( results => {
+        res.status(200).json({ message:'Success', body:results});
     }).catch(err => {
         console.error(err);
-        res.status(500).json( {message: "Failed to get categories",body:{}})
+        res.status(400).json( {message: "Failed to get categories",body:{}})
     })
 });
 
-router.get('/category/:id', auth, function(req, res, next) {
-    Category.findOne({_id:req.params.id}).populate({path:'products',strictPopulate:false}).then( result => {
-
+router.get('/category/:id', function(req, res, next) {
+    Category.findOne({_id:req.params.id}).populate({path:'products',strictPopulate:false}).populate({path:'totalProducts',strictPopulate:false}).then( result => {
         res.status(200).json({ message:'Success', body:result});
     }).catch(err => {
         console.error(err);
-        res.status(500).json( {message: "Failed to get category",body:{}})
+        res.status(400).json( {message: "Failed to get category",body:{}})
     })
 });
 
-router.get('/product', auth, function(req, res, next) {
-    Product.find({}).populate({path:'category',strictPopulate:false}).populate({path:'photos',strictPopulate:false}).then( result => {
-        console.log("Photos:",result.photos)
+router.get('/product', function(req, res, next) {
+    Product.find({}).populate({path:'category',strictPopulate:false}).populate({path:'photos',strictPopulate:true}).populate({path:'numberOfPhotos',strictPopulate:false}).then( result => {
         res.status(200).json({ message:'Success', body:result});
     }).catch(err => {
         console.error(err);
-        res.status(500).json( {message: "Failed to get products",body:{}})
+        res.status(400).json( {message: "Failed to get products",body:{}})
     })
 });
 
-router.get('/product/:id', auth, function(req, res, next) {
-    Product.findOne({_id:req.params.id}).populate({path:'category',strictPopulate:false}).populate({path:'photos',strictPopulate:false}).then( result => {
+router.get('/product/category/:id', function(req, res, next) {
+    Product.find({category:req.params.id}).populate({path:'category',strictPopulate:false}).populate({path:'photos',strictPopulate:true}).populate({path:'numberOfPhotos',strictPopulate:false}).then( result => {
         res.status(200).json({ message:'Success', body:result});
     }).catch(err => {
         console.error(err);
-        res.status(500).json( {message: "Failed to get product",body:{}})
+        res.status(400).json( {message: "Failed to get products",body:{}})
     })
 });
 
-router.get('/profile/:id', auth, function(req, res, next) {
+router.get('/product/:id', function(req, res, next) {
+    Product.findOne({_id:req.params.id}).populate({path:'category',strictPopulate:false}).populate({path:'photos',strictPopulate:true}).then( result => {
+        res.status(200).json({ message:'Success', body:result});
+    }).catch(err => {
+        console.error(err);
+        res.status(400).json( {message: "Failed to get product",body:{}})
+    })
+});
+
+router.get('/profile/:id', auth, async function(req, res, next) {
     User.findOne({_id:req.params.id}).populate({path:'cart',strictPopulate:false}).then( result => {
         res.status(200).json({ message:'Success', body:result});
     }).catch(err => {
         console.error(err);
-        res.status(500).json( {message: "Failed to get User Profile",body:{}})
+        res.status(400).json( {message: "Failed to get User Profile",body:{}})
     })
 });
+
+
+router.get('/cart/:sessionId/:user', auth, function(req, res, next) {
+    Cart.findOne({user:req.params.user,sessionId:req.params.sessionId}).populate({path:'items',strictPopulate:false}).populate({path:'user',strictPopulate:false}).then( result => {
+        console.log("Cart:",result)
+        if(result){
+            res.status(200).json({ message:'Success', body:result});
+            return
+        }
+        res.status(401).json({ message:'Not Found', body:{}});
+
+    }).catch(err => {
+        console.error(err);
+        res.status(400).json( {message: "Failed to get cart details",body:{}})
+    })
+});
+
+router.post('/cart/add-item', auth, async function (req, res, next) {
+    console.log(req.body)
+
+    const {sessionId, productId,user} = req.body;
+    if (!sessionId || !productId || !user) {
+        res.status("400").json({"message": "Invalid Request Data!", body: {}});
+    } else {
+
+        let product = await Product.findOne({_id: productId}).then(result => {
+            return  result;
+        })
+
+        console.log("Product:",product)
+
+        let cart = await Cart.findOne({sessionId: sessionId, user}).populate({path:'items',strictPopulate:false}).then(cart => {
+            return cart
+        })
+
+        console.log("Cart:",cart)
+
+        if(cart === null){
+            const newCart = await new Cart({sessionId, quantity:1,price:product.price, total:1 * product.price, user}).save().then(cart => {
+                return cart
+            })
+
+            console.log("New Cart:",newCart)
+
+            const newItem = await new CartItem({
+                photo: product.imagePath,
+                product: productId,
+                productName: product.title,
+                description: product.description,
+                quantity: 1,
+                price:product.price,
+                total: product.price,
+                cart: newCart._id
+            }).save().then(item => {
+                return item
+            })
+
+            console.log("New Item:",newItem)
+
+            res.status(200).json({"message": "Success!", body: await Cart.findOne({sessionId: sessionId, user}).populate({path:'items',strictPopulate:false}).then(cart => cart)});
+            return
+        }
+
+        console.log("Cart Items:", cart.items)
+        const cartItem = cart.items.find(item => item.product.toString() === productId)
+
+        if(cartItem !== undefined){
+            console.log("Searched Cart Item:",cartItem)
+            cartItem.quantity += 1
+            cartItem.total = cartItem.quantity * cartItem.price
+            const updatedCartItem = await cartItem.save().then(newItem => {
+                return newItem
+            })
+            console.log("UpdatedCartItem:",updatedCartItem)
+
+            cart.quantity += 1
+            cart.total = cart.total + product.price
+            const updatedCart = await cart.save().then(newcart => {
+                return newcart
+            })
+
+            res.status(200).json({"message": "Success!", body: await Cart.findOne({sessionId: sessionId, user}).populate({path:'items',strictPopulate:false}).then(cart => cart)});
+            return
+        }
+
+        const newItem = await new CartItem({
+            photo: product.imagePath,
+            product: productId,
+            productName: product.title,
+            description: product.description,
+            quantity: 1,
+            price:product.price,
+            total: product.price,
+            cart: cart._id
+        }).save().then(item => {
+            return item
+        })
+
+        cart.quantity += 1
+        cart.total = cart.total + product.price
+        const updatedCart = await cart.save().then(newcart => {
+            return newcart
+        })
+
+        res.status(200).json({"message": "Success!", body: await Cart.findOne({sessionId: sessionId, user}).populate({path:'items',strictPopulate:false}).then(cart => cart)});
+    }
+});
+
+router.get('/cart/count/items/:sessionId', auth, async function (req, res, next) {
+    const totalItems = await Cart.findOne({sessionId: req.params.sessionId}).then(result => {
+        if(result !== null) {
+            return result.quantity
+        }
+        return 0
+    })
+    res.status(200).json({message: 'Success', body: totalItems});
+});
+
 
 module.exports = router

@@ -10,7 +10,6 @@ module.exports = (req, res, next) => {
 
             if (req.body.userId && req.body.userId !== userId) {
                 res.status(403).json({message: 'Access Denied',body:{}});
-
             } else {
                 console.log("LoggedIn Successful, DecodedToken:",decodedToken)
                 next();
