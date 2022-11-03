@@ -7,12 +7,12 @@ const Category = require("../model/category");
 const Product = require("../model/product");
 const Cart = require("../model/cart");
 const CartItem = require("../model/cartItem");
+const Setting = require("../model/settings")
 const {
     v1: uuidv1,
     v4: uuidv4,
 } = require('uuid');
-const Console = require("console");
-const mongoose = require("mongoose");
+
 
 const router = express.Router()
 
@@ -279,6 +279,19 @@ router.get('/cart/count/items/:sessionId', auth, async function (req, res, next)
         return 0
     })
     res.status(200).json({message: 'Success', body: totalItems});
+});
+
+router.get('/settings', async function (req, res, next) {
+     Setting.findOne({}).then(result => {
+        if(result !== null) {
+            res.status(200).json({message: 'Success', body: result});
+        }else {
+            res.status(404).json({message: 'Not Found', body: {}});
+        }
+    }).catch(err => {
+         res.status(500).json({message: err, body: {}});
+     })
+
 });
 
 

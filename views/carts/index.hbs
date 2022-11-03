@@ -36,30 +36,19 @@
                             <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th>CustomerName</th>
                                 <th>Quantity</th>
-                                <th>Price</th>
                                 <th>Total</th>
                                 <th>Created date</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
-                            {{#each productList}}
+                            {{#each cartList}}
                                 <tr>
                                     <td>{{this._id}}</td>
-                                    <td><img width="100" height="100" src="{{this.imagePath}}" class="circle-img rounded-15 img-thumbnail" alt="{{this.title}}" /></td>
-                                    <td>
-                                        <span>{{this.title}}</span>
-                                    </td>
-                                    <td>{{this.price}}</td>
-                                    <td >
-                                        {{#if this.available}}
-                                            <span class="font-success">{{this.available}}</span>
-                                        {{else}}
-                                            <span class="font-danger">{{this.available}}</span>
-                                        {{/if}}
-                                    </td>
+<!--                                    <td><img width="100" height="100" src="{{this.imagePath}}" class="circle-img rounded-15 img-thumbnail" alt="{{this.title}}" /></td>-->
+                                    <td>{{this.quantity}}</td>
+                                    <td>{{this.total}}</td>
                                     <td>{{this.createdAt}}</td>
                                     <td>
                                         <a href='/product/{{this._id}}'><i class="fa fa-eye text-info"></i></a>

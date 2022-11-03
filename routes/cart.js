@@ -7,8 +7,8 @@ const router = express.Router()
 
 /* GET Cart List. */
 router.get('/',auth, function(req, res, next) {
-    Cart.find(function(err,carts){
-        res.render('carts/index', { title:'Carts', userList:carts,usersExists:carts.length > 0,id:req.session.user._id,isLoggedIn:true,data:req.session.user});
+    Cart.find({}).then(carts => {
+        res.render('carts/index', { title:'Carts', cartList:carts,exists:carts.length > 0,id:req.session.user._id,isLoggedIn:true,data:req.session.user});
     })
 
 });
