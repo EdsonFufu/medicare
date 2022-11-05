@@ -8,6 +8,9 @@ const Product = require("../model/product");
 const Cart = require("../model/cart");
 const CartItem = require("../model/cartItem");
 const Setting = require("../model/settings")
+const Order = require("../model/order");
+const Invoice = require("../model/invoice");
+const Contact = require("../model/contact");
 const {
     v1: uuidv1,
     v4: uuidv4,
@@ -165,8 +168,8 @@ router.get('/profile/:id', auth, async function(req, res, next) {
 });
 
 
-router.get('/cart/:sessionId/:user', auth, function(req, res, next) {
-    Cart.findOne({user:req.params.user,sessionId:req.params.sessionId}).populate({path:'items',strictPopulate:false}).populate({path:'user',strictPopulate:false}).then( result => {
+router.get('/cart/:user', auth, function(req, res, next) {
+    Cart.findOne({user:req.params.user}).populate({path:'items',strictPopulate:false}).populate({path:'user',strictPopulate:false}).then( result => {
         console.log("Cart:",result)
         if(result){
             res.status(200).json({ message:'Success', body:result});
@@ -194,7 +197,7 @@ router.post('/cart/add-item', auth, async function (req, res, next) {
 
         console.log("Product:",product)
 
-        let cart = await Cart.findOne({sessionId: sessionId, user}).populate({path:'items',strictPopulate:false}).then(cart => {
+        let cart = await Cart.findOne({user}).populate({path:'items',strictPopulate:false}).then(cart => {
             return cart
         })
 
@@ -222,7 +225,7 @@ router.post('/cart/add-item', auth, async function (req, res, next) {
 
             console.log("New Item:",newItem)
 
-            res.status(200).json({"message": "Success!", body: await Cart.findOne({sessionId: sessionId, user}).populate({path:'items',strictPopulate:false}).then(cart => cart)});
+            res.status(200).json({"message": "Success!", body: await Cart.findOne({user}).populate({path:'items',strictPopulate:false}).then(cart => cart)});
             return
         }
 
@@ -244,7 +247,7 @@ router.post('/cart/add-item', auth, async function (req, res, next) {
                 return newcart
             })
 
-            res.status(200).json({"message": "Success!", body: await Cart.findOne({sessionId: sessionId, user}).populate({path:'items',strictPopulate:false}).then(cart => cart)});
+            res.status(200).json({"message": "Success!", body: await Cart.findOne({user}).populate({path:'items',strictPopulate:false}).then(cart => cart)});
             return
         }
 
@@ -267,12 +270,12 @@ router.post('/cart/add-item', auth, async function (req, res, next) {
             return newcart
         })
 
-        res.status(200).json({"message": "Success!", body: await Cart.findOne({sessionId: sessionId, user}).populate({path:'items',strictPopulate:false}).then(cart => cart)});
+        res.status(200).json({"message": "Success!", body: await Cart.findOne({user}).populate({path:'items',strictPopulate:false}).then(cart => cart)});
     }
 });
 
-router.get('/cart/count/items/:sessionId', auth, async function (req, res, next) {
-    const totalItems = await Cart.findOne({sessionId: req.params.sessionId}).then(result => {
+router.get('/cart/count/items/:user', auth, async function (req, res, next) {
+    const totalItems = await Cart.findOne({user: req.params.user}).then(result => {
         if(result !== null) {
             return result.quantity
         }
@@ -291,6 +294,61 @@ router.get('/settings', async function (req, res, next) {
     }).catch(err => {
          res.status(500).json({message: err, body: {}});
      })
+
+});
+
+router.get('/checkout',auth, async function (req, res, next) {
+
+    const {order,contact} = req.body
+
+    const cart = await Cart.findOne({user:order.user,orderCreated:{ $ne: false }}).then(result => {
+        return result
+    })
+
+    const settings = await Setting.findOne({}).then(result => {
+        return result
+    })
+
+    const totalItems = cart.quantity
+    const totalPrice = cart.total
+    const totalTax = totalPrice * (settings.tax / 100)
+    const shipping = settings.shipping
+    const subTotal = totalPrice + totalTax
+    const grandTotal = subTotal + shipping
+
+    const orderItem = await new Order({user:order.user,cart:cart._id,quantity:totalItems,total:totalPrice,tax:totalTax,subTotal,shipping,grandTotal,paid:false}).save().then(order => {
+        return order
+    })
+
+    const {email, mobile, address,country,city,postalCode,user} = contact
+
+    let customerContact = Contact.findOne({user}).then(result => {
+        return result
+    })
+
+    if(!customerContact){
+        customerContact = await new Contact({email, mobile, address,country,city,postalCode,user}).save().then(result => {
+            return result
+        })
+    }
+
+
+    Date.prototype.addDays = function(days) {
+        let date = new Date(this.valueOf());
+        date.setDate(date.getDate() + days);
+        return date;
+    }
+
+
+    const invoice = await new Invoice({order:orderItem._id,cart:cart._id,paymentMethod:order.paymentMethod,amount:grandTotal,issueDate:new Date(),dueDate:new Date().addDays(15),paid:false,contact:customerContact._id}).save().then(result => {
+        return result;
+    })
+
+    if(invoice !== null) {
+        res.status(200).json({message: 'Success', body: invoice});
+    }else {
+        res.status(401).json({message: 'Failed to create new Invoice', body: {}});
+    }
 
 });
 
